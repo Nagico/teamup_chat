@@ -58,8 +58,6 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.hibernate.validator:hibernate-validator:8.0.0.Final")
 
-    implementation("org.codehaus.mojo:aspectj-maven-plugin:1.14.0")
-
     // kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

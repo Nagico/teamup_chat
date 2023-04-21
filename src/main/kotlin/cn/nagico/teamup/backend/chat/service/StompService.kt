@@ -28,6 +28,9 @@ class StompService {
      */
     private val destinations = HashMap<Long, StompSubscription>()
 
+    @Autowired
+    private lateinit var userCacheManager: UserCacheManager
+
     /**
      * 处理CONNECT命令
      *
@@ -59,7 +62,7 @@ class StompService {
         try {
             val token = authentication.split(" ")[1]
             val payload = JwtUtils.validateToken(token)
-            user = User(id = payload.userId)
+            user = User(payload.userId, userCacheManager)
         } catch (e: JwtException) {
             sendErrorFrame("invalid token", "Received invalid token", ctx)
             return
@@ -71,7 +74,7 @@ class StompService {
         } catch (e: Exception) {
 //            sendErrorFrame("invalid token", "Received invalid token", ctx)
 //            return
-            //userCacheManager.setUserStatusCache(user.id, UserStatus.Online)
+            userCacheManager.setUserStatusCache(user.id, UserStatus.Online)
         }
 
 
@@ -205,7 +208,7 @@ class StompService {
     fun onAck(ctx: ChannelHandlerContext, inboundFrame: StompFrame) {
         val sender: User = ctx.channel().attr(USER).get()!!
         // TODO redis 获取对应user
-        val receiver = User(id = 2)
+        val receiver = User(2, userCacheManager)
 
         val data = StompData(inboundFrame, sender.id, receiver.id)
 
