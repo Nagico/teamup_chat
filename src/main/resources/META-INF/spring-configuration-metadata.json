@@ -1,0 +1,85 @@
+{
+  "groups": [],
+  "hints": [],
+  "properties": [
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "sourceType": "cn.nagico.teamup.backend.util.properties.JwtProperties",
+      "description": "JWT密钥."
+    },
+    {
+      "name": "mq.rabbit.host",
+      "type": "java.lang.String",
+      "sourceType": "cn.nagico.teamup.backend.util.properties.RabbitMqProperties",
+      "description": "RabbitMQ 主机."
+    },
+    {
+      "name": "mq.rabbit.port",
+      "type": "java.lang.Integer",
+      "defaultValue": 5672,
+      "sourceType": "cn.nagico.teamup.backend.util.properties.RabbitMqProperties",
+      "description": "RabbitMQ 端口."
+    },
+    {
+      "name": "mq.rabbit.virtualHost",
+      "type": "java.lang.String",
+      "sourceType": "cn.nagico.teamup.backend.util.properties.RabbitMqProperties",
+      "description": "RabbitMQ 虚拟主机."
+    },
+    {
+      "name": "mq.rabbit.username",
+      "type": "java.lang.String",
+      "sourceType": "cn.nagico.teamup.backend.util.properties.RabbitMqProperties",
+      "description": "RabbitMQ 用户名."
+    },
+    {
+      "name": "mq.rabbit.password",
+      "type": "java.lang.String",
+      "sourceType": "cn.nagico.teamup.backend.util.properties.RabbitMqProperties",
+      "description": "RabbitMQ 密码."
+    },
+    {
+      "name": "netty.host",
+      "type": "java.lang.Integer",
+      "defaultValue": "127.0.0.1",
+      "sourceType": "cn.nagico.teamup.backend.util.properties.NettyProperties",
+      "description": "Netty 主机."
+    },
+    {
+      "name": "netty.port",
+      "type": "java.lang.Integer",
+      "defaultValue": 8080,
+      "sourceType": "cn.nagico.teamup.backend.util.properties.NettyProperties",
+      "description": "Netty 端口."
+    },
+    {
+      "name": "netty.portSalve",
+      "type": "java.lang.Integer",
+      "defaultValue": 18080,
+      "sourceType": "cn.nagico.teamup.backend.util.properties.NettyProperties",
+      "description": "Netty 备用端口."
+    },
+    {
+      "name": "netty.timeout",
+      "type": "java.lang.Integer",
+      "defaultValue": 6000,
+      "sourceType": "cn.nagico.teamup.backend.util.properties.NettyProperties",
+      "description": "Netty 连接超时时间."
+    },
+    {
+      "name": "netty.worker",
+      "type": "java.lang.Integer",
+      "defaultValue": 1,
+      "sourceType": "cn.nagico.teamup.backend.util.properties.NettyProperties",
+      "description": "Netty worker 线程数量."
+    },
+    {
+      "name": "netty.boss",
+      "type": "java.lang.Integer",
+      "defaultValue": 1,
+      "sourceType": "cn.nagico.teamup.backend.util.properties.NettyProperties",
+      "description": "Netty boss 线程数量."
+    }
+  ]
+}
