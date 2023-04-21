@@ -1,4 +1,4 @@
-package cn.nagico.teamup.backend.chat.server
+package cn.nagico.teamup.backend.server
 
 import cn.nagico.teamup.backend.util.annotation.Slf4j
 import cn.nagico.teamup.backend.util.annotation.Slf4j.Companion.logger

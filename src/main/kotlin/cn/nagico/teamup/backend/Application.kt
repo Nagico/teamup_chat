@@ -1,6 +1,6 @@
 package cn.nagico.teamup.backend
 
-import cn.nagico.teamup.backend.chat.handler.StompChatHandler
+import cn.nagico.teamup.backend.handler.StompChatHandler
 import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication

@@ -1,4 +1,4 @@
-package cn.nagico.teamup.backend.cache
+package cn.nagico.teamup.backend.manager
 
 
 import cn.nagico.teamup.backend.constant.status.UserStatus

@@ -1,8 +1,8 @@
-package cn.nagico.teamup.backend.chat.server
+package cn.nagico.teamup.backend.server
 
 
-import cn.nagico.teamup.backend.chat.enums.StompVersion
-import cn.nagico.teamup.backend.chat.util.StompWebSocketProtocolCodec
+import cn.nagico.teamup.backend.enums.StompVersion
+import cn.nagico.teamup.backend.util.StompWebSocketProtocolCodec
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.socket.SocketChannel
 import io.netty.handler.codec.http.HttpObjectAggregator

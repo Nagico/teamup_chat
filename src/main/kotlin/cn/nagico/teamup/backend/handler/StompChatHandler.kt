@@ -1,11 +1,11 @@
-package cn.nagico.teamup.backend.chat.handler
+package cn.nagico.teamup.backend.handler
 
 
 
-import cn.nagico.teamup.backend.chat.exception.StompCommandError
-import cn.nagico.teamup.backend.chat.exception.StompException
-import cn.nagico.teamup.backend.chat.exception.StompExceptionType
-import cn.nagico.teamup.backend.chat.service.StompService
+import cn.nagico.teamup.backend.exception.StompCommandError
+import cn.nagico.teamup.backend.exception.StompException
+import cn.nagico.teamup.backend.exception.StompExceptionType
+import cn.nagico.teamup.backend.service.StompService
 import cn.nagico.teamup.backend.util.annotation.Slf4j
 import cn.nagico.teamup.backend.util.annotation.Slf4j.Companion.logger
 import io.netty.channel.ChannelHandler.Sharable

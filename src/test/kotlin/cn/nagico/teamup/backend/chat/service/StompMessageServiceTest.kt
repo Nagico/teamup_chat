@@ -1,7 +1,8 @@
 package cn.nagico.teamup.backend.chat.service
 
-import cn.nagico.teamup.backend.chat.entity.StompMessage
-import cn.nagico.teamup.backend.chat.enums.StompMessageType
+import cn.nagico.teamup.backend.entity.StompMessage
+import cn.nagico.teamup.backend.enums.StompMessageType
+import cn.nagico.teamup.backend.service.StompMessageService
 import cn.nagico.teamup.backend.util.uuid.UUIDUtil
 import org.junit.jupiter.api.Test
 
@@ -34,7 +35,7 @@ class StompMessageServiceTest {
             receiver = 3,
             createTime = 4,
         )
-        stompMessageService.setMessage(id, newMessage)
+        stompMessageService.setMessage(newMessage)
         val message2 = stompMessageService.getMessage(id)
         assertEquals("setMessage", newMessage.content, message2.content)
     }

@@ -1,4 +1,4 @@
-package cn.nagico.teamup.backend.chat.entity
+package cn.nagico.teamup.backend.entity
 
 import cn.nagico.teamup.backend.entity.User
 import io.netty.channel.Channel

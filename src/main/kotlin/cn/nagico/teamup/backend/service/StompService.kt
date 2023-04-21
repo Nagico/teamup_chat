@@ -1,9 +1,9 @@
-package cn.nagico.teamup.backend.chat.service
+package cn.nagico.teamup.backend.service
 
-import cn.nagico.teamup.backend.cache.UserCacheManager
-import cn.nagico.teamup.backend.chat.entity.StompMessage
-import cn.nagico.teamup.backend.chat.entity.StompSubscription
-import cn.nagico.teamup.backend.chat.enums.StompVersion
+import cn.nagico.teamup.backend.manager.UserCacheManager
+import cn.nagico.teamup.backend.entity.StompMessage
+import cn.nagico.teamup.backend.entity.StompSubscription
+import cn.nagico.teamup.backend.enums.StompVersion
 import cn.nagico.teamup.backend.constant.status.UserStatus
 import cn.nagico.teamup.backend.entity.User
 import cn.nagico.teamup.backend.util.jwt.exception.JwtException

@@ -1,6 +1,6 @@
 package cn.nagico.teamup.backend.entity
 
-import cn.nagico.teamup.backend.cache.UserCacheManager
+import cn.nagico.teamup.backend.manager.UserCacheManager
 import cn.nagico.teamup.backend.constant.status.UserStatus
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test

@@ -1,14 +1,15 @@
-package cn.nagico.teamup.backend.chat.entity
+package cn.nagico.teamup.backend.entity
 
-import cn.nagico.teamup.backend.chat.enums.StompContentType
-import cn.nagico.teamup.backend.chat.enums.StompMessageType
-import cn.nagico.teamup.backend.chat.exception.frame.StompHeadMissing
+import cn.nagico.teamup.backend.enums.StompContentType
+import cn.nagico.teamup.backend.enums.StompMessageType
+import cn.nagico.teamup.backend.exception.frame.StompHeadMissing
 import cn.nagico.teamup.backend.model.Message
 import cn.nagico.teamup.backend.util.uuid.UUIDUtil
 import io.netty.buffer.Unpooled
 import io.netty.handler.codec.stomp.DefaultStompFrame
 import io.netty.handler.codec.stomp.StompFrame
 import io.netty.handler.codec.stomp.StompHeaders
+import java.io.Serializable
 import java.util.UUID
 
 data class StompMessage(
@@ -56,5 +57,9 @@ data class StompMessage(
                 }
             }
         }
+    }
+
+    fun toJson(): String {
+        return """{"id": "${UUIDUtil.toHex(id)}","type": "${type.value}","sender": $sender,"receiver": $receiver,"content": "$content","create_time": $createTime}"""
     }
 }

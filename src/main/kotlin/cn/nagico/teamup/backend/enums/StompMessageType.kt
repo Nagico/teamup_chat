@@ -1,4 +1,4 @@
-package cn.nagico.teamup.backend.chat.enums
+package cn.nagico.teamup.backend.enums
 
 import io.netty.handler.codec.stomp.StompCommand
 

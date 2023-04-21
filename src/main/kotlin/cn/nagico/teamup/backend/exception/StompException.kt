@@ -1,4 +1,4 @@
-package cn.nagico.teamup.backend.chat.exception
+package cn.nagico.teamup.backend.exception
 
 open class StompException(
     val type: StompExceptionType = StompExceptionType.UNKNOWN_ERROR,

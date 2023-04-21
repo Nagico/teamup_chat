@@ -1,8 +1,8 @@
-package cn.nagico.teamup.backend.chat.util
+package cn.nagico.teamup.backend.util
 
 
-import cn.nagico.teamup.backend.chat.enums.StompVersion
-import cn.nagico.teamup.backend.chat.handler.StompChatHandler
+import cn.nagico.teamup.backend.enums.StompVersion
+import cn.nagico.teamup.backend.handler.StompChatHandler
 import io.netty.channel.ChannelHandler.Sharable
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToMessageCodec

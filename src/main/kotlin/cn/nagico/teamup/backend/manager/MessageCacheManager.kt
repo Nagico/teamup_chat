@@ -1,10 +1,8 @@
-package cn.nagico.teamup.backend.cache
+package cn.nagico.teamup.backend.manager
 
 
-import cn.nagico.teamup.backend.chat.entity.StompMessage
-import cn.nagico.teamup.backend.constant.status.UserStatus
+import cn.nagico.teamup.backend.entity.StompMessage
 import cn.nagico.teamup.backend.constant.RedisKey
-import org.redisson.api.RedissonClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Component
@@ -25,5 +23,9 @@ class MessageCacheManager {
             RedisKey.messageKey(messageId),
             message
         )
+    }
+
+    fun deleteMessageCache(messageId: UUID) {
+        redisTemplate.delete(RedisKey.messageKey(messageId))
     }
 }

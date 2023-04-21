@@ -1,4 +1,4 @@
-package cn.nagico.teamup.backend.chat.enums
+package cn.nagico.teamup.backend.enums
 
 import io.netty.util.AttributeKey
 import io.netty.util.internal.StringUtil

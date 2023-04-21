@@ -1,4 +1,4 @@
-package cn.nagico.teamup.backend.chat.util
+package cn.nagico.teamup.backend.util
 
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext

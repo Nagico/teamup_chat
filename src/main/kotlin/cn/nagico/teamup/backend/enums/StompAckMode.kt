@@ -1,4 +1,4 @@
-package cn.nagico.teamup.backend.chat.enums
+package cn.nagico.teamup.backend.enums
 
 enum class StompAckMode(val mode: String) {
     AUTO("auto"),

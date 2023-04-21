@@ -1,4 +1,4 @@
-package cn.nagico.teamup.backend.chat.exception
+package cn.nagico.teamup.backend.exception
 
 enum class StompExceptionType(val content: String) {
     FRAME_ERROR("frame_error"),
