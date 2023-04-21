@@ -1,7 +1,7 @@
 package cn.nagico.teamup.backend.chat.service
 
 import cn.nagico.teamup.backend.cache.UserCacheManager
-import cn.nagico.teamup.backend.chat.entity.StompData
+import cn.nagico.teamup.backend.chat.entity.StompMessage
 import cn.nagico.teamup.backend.chat.entity.StompSubscription
 import cn.nagico.teamup.backend.chat.enums.StompVersion
 import cn.nagico.teamup.backend.constant.status.UserStatus
@@ -129,9 +129,9 @@ class StompService {
         }
 
         val user = ctx.channel().attr(USER).get()!!
-        val stompData = StompData(inboundFrame, user.id, destination.toLong())
+        val stompMessage = StompMessage(inboundFrame, user.id, destination.toLong())
 
-        deliverStompData(stompData)
+        deliverStompData(stompMessage)
     }
 
     /**
@@ -160,18 +160,18 @@ class StompService {
      * 传递消息 将消息发送给指定用户
      *
      *
-     * @param stompData 消息内容
+     * @param stompMessage 消息内容
      */
     private fun deliverStompData(
-        stompData: StompData,
+        stompMessage: StompMessage,
     ) {
         //获取接收方订阅
-        val subscription = destinations[stompData.receiver] ?: run {
+        val subscription = destinations[stompMessage.receiver] ?: run {
             // TODO 没有订阅 or 不在线
             return
         }
 
-        subscription.channel.writeAndFlush(stompData.toStompFrame())
+        subscription.channel.writeAndFlush(stompMessage.toStompFrame())
     }
 
     fun sendErrorFrame(message: String, description: String?, ctx: ChannelHandlerContext) {
@@ -210,7 +210,7 @@ class StompService {
         // TODO redis 获取对应user
         val receiver = User(2, userCacheManager)
 
-        val data = StompData(inboundFrame, sender.id, receiver.id)
+        val data = StompMessage(inboundFrame, sender.id, receiver.id)
 
 
         deliverStompData(data)
