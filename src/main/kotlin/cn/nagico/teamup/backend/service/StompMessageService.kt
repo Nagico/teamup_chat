@@ -4,6 +4,7 @@ import cn.nagico.teamup.backend.manager.MessageCacheManager
 import cn.nagico.teamup.backend.entity.StompMessage
 import cn.nagico.teamup.backend.enums.StompMessageType
 import cn.nagico.teamup.backend.manager.MessageQueueManager
+import cn.nagico.teamup.backend.manager.UserCacheManager
 import cn.nagico.teamup.backend.mapper.MessageMapper
 import cn.nagico.teamup.backend.util.uuid.UUIDUtil
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,14 +28,17 @@ class StompMessageService {
     @Autowired
     private lateinit var serverUUID: String
 
+    @Autowired
+    private lateinit var userCacheManager: UserCacheManager
+
     /**
      * 获取消息
      *
      * @param messageId 消息id
      * @return stomp消息
      */
-    fun getMessage(messageId: UUID): StompMessage {
-        return getMessage(UUIDUtil.toHex(messageId))
+    fun getMessage(messageId: UUID, type: StompMessageType): StompMessage {
+        return getMessage(UUIDUtil.toHex(messageId), type)
     }
 
     /**
@@ -43,8 +47,8 @@ class StompMessageService {
      * @param messageId 消息id (hex格式，无 dashes)
      * @return stomp消息
      */
-    fun getMessage(messageId: String): StompMessage {
-        return messageCacheManager.getMessageCache(messageId) ?: StompMessage(messageMapper.selectById(messageId))
+    fun getMessage(messageId: String, type: StompMessageType): StompMessage {
+        return messageCacheManager.getMessageCache(messageId, type) ?: StompMessage(messageMapper.selectById(messageId))
     }
 
     /**
@@ -61,8 +65,12 @@ class StompMessageService {
      *
      * @param messageId 消息id
      */
-    fun deleteMessage(messageId: String) {
-        messageCacheManager.deleteMessageCache(messageId)
+    fun deleteMessage(messageId: String, type: StompMessageType) {
+        messageCacheManager.deleteMessageCache(messageId, type)
+    }
+
+    fun deleteMessage(message: StompMessage) {
+        messageCacheManager.deleteMessageCache(message.id, message.type)
     }
 
     /**
@@ -71,7 +79,12 @@ class StompMessageService {
      * @param message stomp消息
      */
     fun deliverMessage(message: StompMessage) {
-        val target = userService.getUserServer(message.receiver) ?: return
+        val target = userService.getUserServer(message.receiver) ?: let {
+            // 用户不在线
+            setMessage(message)
+            userCacheManager.addUserUnreadMessage(message)
+            return
+        }
 
         when (message.type) {
             StompMessageType.MESSAGE -> {
@@ -80,7 +93,7 @@ class StompMessageService {
                 messageQueueManager.saveStompMessage(message)
             }
             StompMessageType.ACK -> {
-                //deleteMessage(message.id)
+                deleteMessage(message)
                 messageQueueManager.deliverStompMessage(target, message)
             }
         }

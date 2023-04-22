@@ -1,9 +1,9 @@
 package cn.nagico.teamup.backend.manager
 
 
-import cn.nagico.teamup.backend.constant.status.UserStatus
 import cn.nagico.teamup.backend.constant.RedisKey
-import cn.nagico.teamup.backend.exception.StompAuthError
+import cn.nagico.teamup.backend.entity.StompMessage
+import cn.nagico.teamup.backend.enums.StompMessageType
 import org.redisson.api.RedissonClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.redis.core.RedisTemplate
@@ -38,7 +38,7 @@ class UserCacheManager {
         lock.lock()
         try {
             getUserServer(userId)?.let {
-                //throw StompAuthError("User $userId is already online")
+                //TODO throw StompAuthError("User $userId is already online")
                 setUserServer(userId, serverUUID)
             } ?: setUserServer(userId, serverUUID)
         } finally {
@@ -57,5 +57,21 @@ class UserCacheManager {
         } finally {
             lock.unlock()
         }
+    }
+
+    fun getUserUnreadMessage(userId: Long): List<String> {
+        return redisTemplate.opsForList().range(RedisKey.userUnreadMessagesKey(userId), 0, -1) as List<String>
+    }
+
+    fun addUserUnreadMessage(userId: Long, messageId: String, type: StompMessageType) {
+        redisTemplate.opsForList().leftPush(RedisKey.userUnreadMessagesKey(userId), RedisKey.messageKey(messageId, type))
+    }
+
+    fun addUserUnreadMessage(message: StompMessage) {
+        redisTemplate.opsForList().leftPush(RedisKey.userUnreadMessagesKey(message.receiver), RedisKey.messageKey(message))
+    }
+
+    fun removeAllUserUnreadMessage(userId: Long) {
+        redisTemplate.opsForList().trim(RedisKey.userUnreadMessagesKey(userId), 1, 0)
     }
 }
