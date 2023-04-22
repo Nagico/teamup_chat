@@ -13,6 +13,9 @@ import java.util.*
 @Service
 class StompMessageService {
     @Autowired
+    private lateinit var userService: UserService
+
+    @Autowired
     private lateinit var messageCacheManager: MessageCacheManager
 
     @Autowired
@@ -21,6 +24,9 @@ class StompMessageService {
     @Autowired
     private lateinit var messageQueueManager: MessageQueueManager
 
+    @Autowired
+    private lateinit var serverUUID: String
+
     /**
      * 获取消息
      *
@@ -28,7 +34,17 @@ class StompMessageService {
      * @return stomp消息
      */
     fun getMessage(messageId: UUID): StompMessage {
-        return messageCacheManager.getMessageCache(messageId) ?: StompMessage(messageMapper.selectById(UUIDUtil.toHex(messageId)))
+        return getMessage(UUIDUtil.toHex(messageId))
+    }
+
+    /**
+     * 获取消息
+     *
+     * @param messageId 消息id (hex格式，无 dashes)
+     * @return stomp消息
+     */
+    fun getMessage(messageId: String): StompMessage {
+        return messageCacheManager.getMessageCache(messageId) ?: StompMessage(messageMapper.selectById(messageId))
     }
 
     /**
@@ -37,7 +53,7 @@ class StompMessageService {
      * @param message stomp消息
      */
     fun setMessage(message: StompMessage) {
-        messageCacheManager.setMessageCache(message.id, message)
+        messageCacheManager.setMessageCache(message)
     }
 
     /**
@@ -45,7 +61,7 @@ class StompMessageService {
      *
      * @param messageId 消息id
      */
-    fun deleteMessage(messageId: UUID) {
+    fun deleteMessage(messageId: String) {
         messageCacheManager.deleteMessageCache(messageId)
     }
 
@@ -55,15 +71,19 @@ class StompMessageService {
      * @param message stomp消息
      */
     fun deliverMessage(message: StompMessage) {
+        val target = userService.getUserServer(message.receiver) ?: return
+
         when (message.type) {
             StompMessageType.MESSAGE -> {
                 setMessage(message)
+                messageQueueManager.deliverStompMessage(target, message)
+                messageQueueManager.saveStompMessage(message)
             }
             StompMessageType.ACK -> {
-                deleteMessage(message.id)
+                //deleteMessage(message.id)
+                messageQueueManager.deliverStompMessage(target, message)
             }
         }
-        messageQueueManager.sendStompMessage(message)
     }
 
 }

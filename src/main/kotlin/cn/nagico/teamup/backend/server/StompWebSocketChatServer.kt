@@ -37,8 +37,14 @@ class StompWebSocketChatServer {
     @PostConstruct
     fun start() {
         // 绑定端口启动
-        serverBootstrap.bind(nettyProperties.port).sync()
-        logger.info("Netty Start at port: ${nettyProperties.port}")
+        try {
+            serverBootstrap.bind(nettyProperties.port).sync()
+            logger.info("Netty Start at port: ${nettyProperties.port}")
+        } catch (e: Exception) {
+            serverBootstrap.bind(nettyProperties.portSalve).sync()
+            logger.info("Netty Start at port: ${nettyProperties.portSalve}")
+        }
+
     }
 
     /**

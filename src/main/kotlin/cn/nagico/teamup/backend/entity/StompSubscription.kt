@@ -1,6 +1,5 @@
 package cn.nagico.teamup.backend.entity
 
-import cn.nagico.teamup.backend.entity.User
 import io.netty.channel.Channel
 
 /**
@@ -10,6 +9,6 @@ import io.netty.channel.Channel
  * @param channel 订阅channel
  */
 data class StompSubscription(
-    val user: User,
+    val user: Long,
     val channel: Channel,
 )

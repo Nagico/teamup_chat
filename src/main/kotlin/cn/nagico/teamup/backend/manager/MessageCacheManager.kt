@@ -14,18 +14,18 @@ class MessageCacheManager {
     @Autowired
     private lateinit var redisTemplate: RedisTemplate<String, Any>
 
-    fun getMessageCache(messageId: UUID): StompMessage? {
+    fun getMessageCache(messageId: String): StompMessage? {
         return redisTemplate.opsForValue()[RedisKey.messageKey(messageId)] as? StompMessage
     }
 
-    fun setMessageCache(messageId: UUID, message: StompMessage) {
+    fun setMessageCache(message: StompMessage) {
         redisTemplate.opsForValue().set(
-            RedisKey.messageKey(messageId),
+            RedisKey.messageKey(message.id),
             message
         )
     }
 
-    fun deleteMessageCache(messageId: UUID) {
+    fun deleteMessageCache(messageId: String) {
         redisTemplate.delete(RedisKey.messageKey(messageId))
     }
 }

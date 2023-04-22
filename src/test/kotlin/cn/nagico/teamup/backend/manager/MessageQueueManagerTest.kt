@@ -4,7 +4,6 @@ import cn.nagico.teamup.backend.entity.StompMessage
 import cn.nagico.teamup.backend.enums.StompMessageType
 import org.junit.jupiter.api.Test
 
-import org.junit.jupiter.api.Assertions.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import java.util.*
@@ -24,6 +23,6 @@ class MessageQueueManagerTest {
             receiver = 3,
             createTime = 4,
         )
-        messageQueueManager.sendStompMessage(newMessage)
+        messageQueueManager.saveStompMessage(newMessage)
     }
 }

@@ -1,12 +1,10 @@
 package cn.nagico.teamup.backend.service
 
-import cn.nagico.teamup.backend.manager.UserCacheManager
 import cn.nagico.teamup.backend.entity.StompMessage
 import cn.nagico.teamup.backend.entity.StompSubscription
 import cn.nagico.teamup.backend.enums.StompVersion
-import cn.nagico.teamup.backend.constant.status.UserStatus
-import cn.nagico.teamup.backend.entity.User
-import cn.nagico.teamup.backend.util.jwt.exception.JwtException
+import cn.nagico.teamup.backend.exception.StompVersionError
+import cn.nagico.teamup.backend.exception.frame.StompHeadMissing
 import cn.nagico.teamup.utils.jwt.JwtUtils
 import io.netty.channel.ChannelFutureListener
 import io.netty.channel.ChannelHandlerContext
@@ -14,6 +12,7 @@ import io.netty.handler.codec.stomp.DefaultStompFrame
 import io.netty.handler.codec.stomp.StompCommand
 import io.netty.handler.codec.stomp.StompFrame
 import io.netty.handler.codec.stomp.StompHeaders
+import io.netty.util.AsciiString
 import io.netty.util.AttributeKey
 import io.netty.util.CharsetUtil
 import org.springframework.beans.factory.annotation.Autowired
@@ -29,7 +28,21 @@ class StompService {
     private val destinations = HashMap<Long, StompSubscription>()
 
     @Autowired
-    private lateinit var userCacheManager: UserCacheManager
+    private lateinit var stompMessageService: StompMessageService
+
+    @Autowired
+    private lateinit var userService: UserService
+
+    @Autowired
+    private lateinit var serverUUID: String
+
+    private fun getHeader(frame: StompFrame, header: String): String {
+        return frame.headers().getAsString(header) ?: throw StompHeadMissing(header)
+    }
+
+    private fun getHeader(frame: StompFrame, header: AsciiString): String {
+        return frame.headers().getAsString(header) ?: throw StompHeadMissing(header)
+    }
 
     /**
      * 处理CONNECT命令
@@ -39,43 +52,20 @@ class StompService {
      */
     fun onConnect(ctx: ChannelHandlerContext, inboundFrame: StompFrame) {
         // 获取client支持的stomp版本
-        val acceptVersions = inboundFrame.headers().getAsString(StompHeaders.ACCEPT_VERSION)
+        val acceptVersions = getHeader(inboundFrame, StompHeaders.ACCEPT_VERSION)
         // 获取server匹配的stomp版本
-        val handshakeAcceptVersion: StompVersion = ctx.channel().attr(StompVersion.CHANNEL_ATTRIBUTE_KEY).get()
-        // 版本不匹配
-        if (acceptVersions == null || !acceptVersions.contains(handshakeAcceptVersion.version)) {
-            sendErrorFrame(
-                "invalid version",
-                "Received invalid version, expected " + handshakeAcceptVersion.version, ctx
-            )
-            return
+        val handshakeAcceptVersion = ctx.channel().attr(StompVersion.CHANNEL_ATTRIBUTE_KEY).get().also {
+            if (!acceptVersions.contains(it.version))
+                throw StompVersionError(it.version)
         }
 
-        // 获取认证header
-        val authentication = inboundFrame.headers().getAsString("Authentication") ?: run {
-            sendErrorFrame("missed header", "Required 'Authentication' header missed", ctx)
-            return
-        }
-
-        val user: User
-
-        try {
-            val token = authentication.split(" ")[1]
-            val payload = JwtUtils.validateToken(token)
-            user = User(payload.userId, userCacheManager)
-        } catch (e: JwtException) {
-            sendErrorFrame("invalid token", "Received invalid token", ctx)
-            return
-        }
+        // 认证
+        val token = getHeader(inboundFrame, AUTH).split(" ")[1]
+        val payload = JwtUtils.validateToken(token)
+        val user = payload.userId
 
 
-        try {
-            user.status = UserStatus.Online
-        } catch (e: Exception) {
-//            sendErrorFrame("invalid token", "Received invalid token", ctx)
-//            return
-            userCacheManager.setUserStatusCache(user.id, UserStatus.Online)
-        }
+        userService.online(user)
 
 
         ctx.channel().attr(USER).set(user)
@@ -86,9 +76,9 @@ class StompService {
         connectedFrame.headers()
             .set(StompHeaders.VERSION, handshakeAcceptVersion.version)
             .set(StompHeaders.SESSION, ctx.channel().id().asLongText())
-            .set(StompHeaders.SERVER, "Netty/4.1")
+            .set(StompHeaders.SERVER, "Netty/4.1 ($serverUUID)")
             .set(StompHeaders.HEART_BEAT, "0,0")
-            .set("user", user.id.toString())
+            .set("user", user.toString())
         ctx.writeAndFlush(connectedFrame)
     }
 
@@ -104,7 +94,7 @@ class StompService {
         val receiptId = inboundFrame.headers().getAsString(StompHeaders.RECEIPT) ?: run {
             // 没有回执帧发送请求，直接关闭连接
             ctx.close()
-            user.status = UserStatus.Offline
+            userService.offline(user)
             return
         }
 
@@ -112,7 +102,7 @@ class StompService {
         val receiptFrame = DefaultStompFrame(StompCommand.RECEIPT)
         receiptFrame.headers()[StompHeaders.RECEIPT_ID] = receiptId
         ctx.writeAndFlush(receiptFrame).addListener(ChannelFutureListener.CLOSE)  // 发送回执帧后关闭连接
-        user.status = UserStatus.Offline
+        userService.offline(user)
     }
 
     /**
@@ -129,9 +119,9 @@ class StompService {
         }
 
         val user = ctx.channel().attr(USER).get()!!
-        val stompMessage = StompMessage(inboundFrame, user.id, destination.toLong())
+        val stompMessage = StompMessage(inboundFrame, user, destination.toLong())
 
-        deliverStompData(stompMessage)
+        stompMessageService.deliverMessage(stompMessage)
     }
 
     /**
@@ -142,32 +132,31 @@ class StompService {
      * @param ctx Context
      */
     private fun subscribe(
-        user: User,
+        user: Long,
         ctx: ChannelHandlerContext,
     ) {
         val subscription = StompSubscription(user, ctx.channel())  // 创建订阅对象
 
-        destinations[user.id] = subscription  // 添加订阅
+        destinations[user] = subscription  // 添加订阅
 
         ctx.channel()
             .closeFuture()  // 监听channel关闭事件
             .addListener(ChannelFutureListener {
-                destinations.remove(user.id)  // 移除订阅
+                destinations.remove(user)  // 移除订阅
             })
     }
 
     /**
-     * 传递消息 将消息发送给指定用户
+     * 传递消息 将消息发送给本服务端用户
      *
      *
      * @param stompMessage 消息内容
      */
-    private fun deliverStompData(
+    fun deliverMessage(
         stompMessage: StompMessage,
     ) {
         //获取接收方订阅
         val subscription = destinations[stompMessage.receiver] ?: run {
-            // TODO 没有订阅 or 不在线
             return
         }
 
@@ -206,17 +195,15 @@ class StompService {
      * @param inboundFrame 请求帧
      */
     fun onAck(ctx: ChannelHandlerContext, inboundFrame: StompFrame) {
-        val sender: User = ctx.channel().attr(USER).get()!!
-        // TODO redis 获取对应user
-        val receiver = User(2, userCacheManager)
+        val message = stompMessageService.getMessage(getHeader(inboundFrame, StompHeaders.ID))
+        val ackMessage = StompMessage(inboundFrame, message.receiver, message.sender)
 
-        val data = StompMessage(inboundFrame, sender.id, receiver.id)
-
-
-        deliverStompData(data)
+        stompMessageService.deliverMessage(ackMessage)
     }
 
     companion object {
-        private val USER = AttributeKey.valueOf<User>("user")
+        private val USER = AttributeKey.valueOf<Long>("user")
+
+        private const val AUTH = "Authentication"
     }
 }
