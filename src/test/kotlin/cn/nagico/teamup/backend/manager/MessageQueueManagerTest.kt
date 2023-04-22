@@ -16,7 +16,7 @@ class MessageQueueManagerTest {
     @Test
     fun sendStompMessage() {
         val newMessage = StompMessage(
-            id = UUID.randomUUID(),
+            id = UUID.randomUUID().toString(),
             content = "test",
             type = StompMessageType.MESSAGE,
             sender = 2,

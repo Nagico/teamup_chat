@@ -2,6 +2,7 @@ package cn.nagico.teamup.backend.service
 
 import cn.nagico.teamup.backend.entity.StompMessage
 import cn.nagico.teamup.backend.entity.StompSubscription
+import cn.nagico.teamup.backend.enums.StompMessageType
 import cn.nagico.teamup.backend.enums.StompVersion
 import cn.nagico.teamup.backend.exception.StompVersionError
 import cn.nagico.teamup.backend.exception.frame.StompHeadMissing
@@ -80,6 +81,11 @@ class StompService {
             .set(StompHeaders.HEART_BEAT, "0,0")
             .set("user", user.toString())
         ctx.writeAndFlush(connectedFrame)
+
+        // 发送未读消息
+        for (message in stompMessageService.fetchUnreadMessages(user)) {
+            ctx.writeAndFlush(message.toStompFrame())
+        }
     }
 
     /**
@@ -195,7 +201,7 @@ class StompService {
      * @param inboundFrame 请求帧
      */
     fun onAck(ctx: ChannelHandlerContext, inboundFrame: StompFrame) {
-        val message = stompMessageService.getMessage(getHeader(inboundFrame, StompHeaders.ID))
+        val message = stompMessageService.getMessage(getHeader(inboundFrame, StompHeaders.ID), StompMessageType.MESSAGE)
         val ackMessage = StompMessage(inboundFrame, message.receiver, message.sender)
 
         stompMessageService.deliverMessage(ackMessage)

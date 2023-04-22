@@ -93,9 +93,29 @@ class StompMessageService {
                 messageQueueManager.saveStompMessage(message)
             }
             StompMessageType.ACK -> {
-                deleteMessage(message)
+                deleteMessage(message.id, StompMessageType.MESSAGE)
                 messageQueueManager.deliverStompMessage(target, message)
             }
+        }
+    }
+
+    /**
+     * 获取用户未读消息
+     *
+     * @param userId
+     * @return
+     */
+    fun fetchUnreadMessages(userId: Long): List<StompMessage> {
+        return userCacheManager.getUserUnreadMessages(userId).mapNotNull { key ->
+            messageCacheManager.getMessageCacheByKey(key).also {
+                if (it is StompMessage && it.type == StompMessageType.ACK)  // ACK消息无需确认，直接删除
+                {
+                    messageCacheManager.deleteMessageCache(it.id, StompMessageType.MESSAGE)
+                    messageCacheManager.deleteMessageCacheByKey(key)
+                }
+            }
+        }.also {
+            userCacheManager.clearUserUnreadMessages(userId)
         }
     }
 

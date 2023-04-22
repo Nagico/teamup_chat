@@ -19,6 +19,10 @@ class MessageCacheManager {
         return redisTemplate.opsForValue()[RedisKey.messageKey(messageId, type)] as? StompMessage
     }
 
+    fun getMessageCacheByKey(key: String): StompMessage? {
+        return redisTemplate.opsForValue()[key] as? StompMessage
+    }
+
     fun setMessageCache(message: StompMessage) {
         redisTemplate.opsForValue().set(
             RedisKey.messageKey(message.id, message.type),
@@ -28,5 +32,9 @@ class MessageCacheManager {
 
     fun deleteMessageCache(messageId: String, type: StompMessageType) {
         redisTemplate.delete(RedisKey.messageKey(messageId, type))
+    }
+
+    fun deleteMessageCacheByKey(key: String) {
+        redisTemplate.delete(key)
     }
 }
