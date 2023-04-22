@@ -19,7 +19,7 @@ class RabbitMQConfig {
     // Queue
     @Bean
     fun messageSaveQueue(): Queue {
-        return Queue(SAVE_QUEUE_NAME, false, false, false)
+        return Queue(SAVE_QUEUE_NAME, true, false, false)
     }
 
     @Bean

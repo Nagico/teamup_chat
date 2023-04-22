@@ -11,7 +11,7 @@ class MessageQueueManager {
     private lateinit var rabbitTemplate: RabbitTemplate
 
     fun saveStompMessage(stompMessage: StompMessage) {
-        rabbitTemplate.convertAndSend("teamup.fanout.save", "", stompMessage.toJson())
+        rabbitTemplate.convertAndSend("teamup.direct.save", "", stompMessage.toJson())
     }
 
     fun deliverStompMessage(target: String, stompMessage: StompMessage) {

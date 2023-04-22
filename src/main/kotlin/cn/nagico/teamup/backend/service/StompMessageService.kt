@@ -83,6 +83,7 @@ class StompMessageService {
             // 用户不在线
             setMessage(message)
             userCacheManager.addUserUnreadMessage(message)
+            messageQueueManager.saveStompMessage(message)
             return
         }
 
@@ -95,6 +96,7 @@ class StompMessageService {
             StompMessageType.ACK -> {
                 deleteMessage(message.id, StompMessageType.MESSAGE)
                 messageQueueManager.deliverStompMessage(target, message)
+                messageQueueManager.saveStompMessage(message)
             }
         }
     }

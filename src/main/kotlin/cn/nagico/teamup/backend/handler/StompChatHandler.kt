@@ -15,6 +15,7 @@ import io.netty.handler.codec.stomp.StompCommand
 import io.netty.handler.codec.stomp.StompFrame
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.net.SocketException
 
 /**
  * 处理stomp协议
@@ -127,6 +128,7 @@ class StompChatHandler : SimpleChannelInboundHandler<StompFrame>() {
     override fun exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable) {
         when (cause) {
             is StompException -> stompService.sendErrorFrame(cause.type.content, cause.message, ctx)
+            is SocketException -> {}
             else -> {
                 logger.error("Unknown Error", cause)
                 stompService.sendErrorFrame(StompExceptionType.UNKNOWN_ERROR.content, cause.message, ctx)
