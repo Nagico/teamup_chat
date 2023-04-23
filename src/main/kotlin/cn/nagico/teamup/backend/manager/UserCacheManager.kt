@@ -60,7 +60,7 @@ class UserCacheManager {
     }
 
     fun getUserUnreadMessages(userId: Long): List<String> {
-        return redisTemplate.opsForList().range(RedisKey.userUnreadMessagesKey(userId), 0, -1) as List<String>
+        return redisTemplate.opsForList().range(RedisKey.userUnreadMessagesKey(userId), 0, -1)?.map { it as String } ?: listOf()
     }
 
     fun addUserUnreadMessage(userId: Long, messageId: String, type: StompMessageType) {
