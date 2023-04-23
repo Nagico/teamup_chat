@@ -48,7 +48,7 @@ class StompMessageService {
      * @return stomp消息
      */
     fun getMessage(messageId: String, type: StompMessageType): StompMessage {
-        return messageCacheManager.getMessageCache(messageId, type) ?: StompMessage(messageMapper.selectById(messageId))
+        return messageCacheManager.getMessageCache(messageId, type) ?: StompMessage(messageMapper.selectById(messageId.replace("-", "")))
     }
 
     /**

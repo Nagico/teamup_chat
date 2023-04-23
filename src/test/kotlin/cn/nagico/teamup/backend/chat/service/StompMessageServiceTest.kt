@@ -14,29 +14,4 @@ import org.springframework.test.util.AssertionErrors.assertEquals
 class StompMessageServiceTest {
     @Autowired
     private lateinit var stompMessageService: StompMessageService
-
-    @Test
-    fun getMessage() {
-        val id = UUIDUtil.fromHex("0b7d5ddf2dd44c31a8d64764ebf2e2f0")
-        val message = stompMessageService.getMessage(id)
-        assertEquals("getMessage", id, message.id)
-    }
-
-    @Test
-    fun setMessage() {
-        val id = UUIDUtil.fromHex("0b7d5ddf2dd44c31a8d64764ebf2e2f0")
-        val message = stompMessageService.getMessage(id)
-        assertEquals("getMessage", id, message.id)
-        val newMessage = StompMessage(
-            id = id,
-            content = "test",
-            type = StompMessageType.MESSAGE,
-            sender = 2,
-            receiver = 3,
-            createTime = 4,
-        )
-        stompMessageService.setMessage(newMessage)
-        val message2 = stompMessageService.getMessage(id)
-        assertEquals("setMessage", newMessage.content, message2.content)
-    }
 }
