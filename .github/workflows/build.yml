@@ -43,6 +43,11 @@ jobs:
         run: |
           gradle build
 
+      - name: Collect Jar
+        run: |
+          rm -rf build/libs/*-plain.jar
+          mv build/libs/*.jar build/libs/app.jar
+
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
         with:
