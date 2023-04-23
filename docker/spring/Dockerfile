@@ -14,6 +14,6 @@ HEALTHCHECK --interval=30s --timeout=3s --retries=3 CMD curl -f http://localhost
 
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/etc/spring/app.jar"]
 
-COPY build/lib lib
+COPY build/libs/lib lib
 
-COPY build/app.jar app.jar
+COPY build/libs/app.jar app.jar
