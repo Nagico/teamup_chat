@@ -13,7 +13,7 @@ version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 springBoot {
-    mainClass.set("cn.nagico.teamup.backend.Application")
+    mainClass.set("cn.nagico.teamup.backend.ApplicationKt")
 }
 
 configurations {
