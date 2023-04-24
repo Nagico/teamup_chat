@@ -1,0 +1,37 @@
+netty:
+  boss: 2
+  worker: 4
+  timeout: 6000
+  port: 8060
+  portSalve: 18060
+  host: 127.0.0.1
+
+spring:
+  jackson:
+    date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
+    time-zone: GMT+8
+  datasource:
+    url: jdbc:${DATABASE_URL}?characterEncoding=utf8&serverTimezone=GMT%2B8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  data:
+    redis:
+      host: redis
+      ssl: false
+      timeout: 5000
+      database: 8
+  rabbitmq:
+    host: mq
+    port: 5672
+    username: admin
+    password: admin
+    virtual-host: /teamup
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:/mapper/*.xml
+  type-aliases-package: cn.nagico.teamup.backend.model
+
+jwt:
+  secret: ${DJANGO_SECRET_KEY}
