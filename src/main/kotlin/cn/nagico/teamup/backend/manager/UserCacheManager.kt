@@ -64,7 +64,7 @@ class UserCacheManager {
     }
 
     fun addUserUnreceivedMessage(message: StompMessage) {
-        redisTemplate.opsForList().leftPush(RedisKey.userUnreceivedMessagesKey(message.receiver), message.id)
+        redisTemplate.opsForList().rightPush(RedisKey.userUnreceivedMessagesKey(message.receiver), message.id)
     }
 
     fun deleteUserUnreceivedMessage(userId: Long, messageId: String) {
