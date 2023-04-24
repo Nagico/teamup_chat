@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class StompWebSocketChatServerInitializer : ChannelInitializer<SocketChannel>() {
-    private val chatPath: String = "/chat"
+    private val chatPath: String = "/"
 
     @Autowired
     private lateinit var stompWebSocketProtocolCodec: StompWebSocketProtocolCodec
