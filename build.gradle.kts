@@ -62,18 +62,12 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    // mybatis
-    implementation("com.baomidou:mybatis-plus-boot-starter:3.5.3.1")
-
     // json
     implementation("com.alibaba:fastjson:2.0.15")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.0")
 
     // hutool
     implementation("cn.hutool:hutool-all:5.8.11")
-
-    // mysql
-    runtimeOnly("com.mysql:mysql-connector-j")
 
     // redis
     implementation("org.springframework.boot:spring-boot-starter-data-redis")

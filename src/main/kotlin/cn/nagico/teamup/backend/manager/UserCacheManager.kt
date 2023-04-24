@@ -60,18 +60,14 @@ class UserCacheManager {
     }
 
     fun getUserUnreadMessages(userId: Long): List<String> {
-        return redisTemplate.opsForList().range(RedisKey.userUnreadMessagesKey(userId), 0, -1)?.map { it as String } ?: listOf()
+        return redisTemplate.opsForList().range(RedisKey.userUnreceivedMessagesKey(userId), 0, -1)?.map { it as String } ?: listOf()
     }
 
-    fun addUserUnreadMessage(userId: Long, messageId: String, type: StompMessageType) {
-        redisTemplate.opsForList().rightPush(RedisKey.userUnreadMessagesKey(userId), RedisKey.messageKey(messageId, type))
+    fun addUserUnreceivedMessage(message: StompMessage) {
+        redisTemplate.opsForList().rightPush(RedisKey.userUnreceivedMessagesKey(message.receiver), message.id)
     }
 
-    fun addUserUnreadMessage(message: StompMessage) {
-        redisTemplate.opsForList().rightPush(RedisKey.userUnreadMessagesKey(message.receiver), RedisKey.messageKey(message))
-    }
-
-    fun clearUserUnreadMessages(userId: Long) {
-        redisTemplate.opsForList().trim(RedisKey.userUnreadMessagesKey(userId), 1, 0)
+    fun deleteUserUnreceivedMessage(userId: Long, messageId: String) {
+        redisTemplate.opsForList().remove(RedisKey.userUnreceivedMessagesKey(userId), 0, messageId)
     }
 }

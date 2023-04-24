@@ -2,7 +2,6 @@ package cn.nagico.teamup.backend.service
 
 import cn.nagico.teamup.backend.entity.StompMessage
 import cn.nagico.teamup.backend.entity.StompSubscription
-import cn.nagico.teamup.backend.enums.StompMessageType
 import cn.nagico.teamup.backend.enums.StompVersion
 import cn.nagico.teamup.backend.exception.StompVersionError
 import cn.nagico.teamup.backend.exception.frame.StompHeadMissing
@@ -83,7 +82,7 @@ class StompService {
         ctx.writeAndFlush(connectedFrame)
 
         // 发送未读消息
-        for (message in stompMessageService.fetchUnreadMessages(user)) {
+        for (message in stompMessageService.fetchUnreceivedMessages(user)) {
             ctx.writeAndFlush(message.toStompFrame())
         }
     }
@@ -119,10 +118,7 @@ class StompService {
      */
     fun onSend(ctx: ChannelHandlerContext, inboundFrame: StompFrame) {
         //获取目的地址
-        val destination = inboundFrame.headers().getAsString(StompHeaders.DESTINATION) ?: run {
-            sendErrorFrame("missed header", "Required 'destination' header missed", ctx)
-            return
-        }
+        val destination = getHeader(inboundFrame, StompHeaders.DESTINATION)
 
         val user = ctx.channel().attr(USER).get()!!
         val stompMessage = StompMessage(inboundFrame, user, destination.toLong())
@@ -201,10 +197,9 @@ class StompService {
      * @param inboundFrame 请求帧
      */
     fun onAck(ctx: ChannelHandlerContext, inboundFrame: StompFrame) {
-        val message = stompMessageService.getMessage(getHeader(inboundFrame, StompHeaders.ID), StompMessageType.MESSAGE)
-        val ackMessage = StompMessage(inboundFrame, message.receiver, message.sender)
-
-        stompMessageService.deliverMessage(ackMessage)
+        val user = ctx.channel().attr(USER).get()!!
+        val messageId = getHeader(inboundFrame, StompHeaders.MESSAGE_ID)
+        stompMessageService.ackMessage(user, messageId)
     }
 
     companion object {

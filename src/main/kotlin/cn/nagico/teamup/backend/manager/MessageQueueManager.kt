@@ -14,7 +14,7 @@ class MessageQueueManager {
         rabbitTemplate.convertAndSend("teamup.direct.save", "", stompMessage.toJson())
     }
 
-    fun deliverStompMessage(target: String, stompMessage: StompMessage) {
+    fun forwardStompMessage(target: String, stompMessage: StompMessage) {
         rabbitTemplate.convertAndSend("teamup.direct.deliver", target, stompMessage.toJson())
     }
 }
