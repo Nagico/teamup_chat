@@ -1,7 +1,7 @@
 package cn.nagico.teamup.backend.service
 
 import cn.nagico.teamup.backend.manager.MessageCacheManager
-import cn.nagico.teamup.backend.entity.StompMessage
+import cn.nagico.teamup.backend.entity.message.StompMessage
 import cn.nagico.teamup.backend.manager.MessageQueueManager
 import cn.nagico.teamup.backend.manager.UserCacheManager
 import cn.nagico.teamup.backend.util.uuid.UUIDUtil

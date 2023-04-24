@@ -1,6 +1,8 @@
 package cn.nagico.teamup.backend.manager
 
-import cn.nagico.teamup.backend.entity.StompMessage
+import cn.nagico.teamup.backend.entity.message.StompMessage
+import cn.nagico.teamup.backend.entity.message.StompMessageContent
+import cn.nagico.teamup.backend.enums.StompMessageContentType
 import cn.nagico.teamup.backend.enums.StompMessageType
 import org.junit.jupiter.api.Test
 
@@ -17,7 +19,7 @@ class MessageQueueManagerTest {
     fun sendStompMessage() {
         val newMessage = StompMessage(
             id = UUID.randomUUID().toString(),
-            content = "test",
+            content = StompMessageContent(StompMessageContentType.CHAT, "123"),
             type = StompMessageType.MESSAGE,
             sender = 2,
             receiver = 3,

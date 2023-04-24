@@ -1,6 +1,6 @@
 package cn.nagico.teamup.backend.handler
 
-import cn.nagico.teamup.backend.entity.StompMessage
+import cn.nagico.teamup.backend.entity.message.StompMessage
 import cn.nagico.teamup.backend.service.StompService
 import cn.nagico.teamup.backend.util.config.RabbitMQConfig
 import com.alibaba.fastjson.JSON

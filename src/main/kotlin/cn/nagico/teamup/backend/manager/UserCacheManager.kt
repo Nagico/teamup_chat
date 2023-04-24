@@ -2,8 +2,7 @@ package cn.nagico.teamup.backend.manager
 
 
 import cn.nagico.teamup.backend.constant.RedisKey
-import cn.nagico.teamup.backend.entity.StompMessage
-import cn.nagico.teamup.backend.enums.StompMessageType
+import cn.nagico.teamup.backend.entity.message.StompMessage
 import org.redisson.api.RedissonClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.redis.core.RedisTemplate

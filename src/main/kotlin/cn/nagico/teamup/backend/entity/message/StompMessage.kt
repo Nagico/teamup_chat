@@ -1,4 +1,4 @@
-package cn.nagico.teamup.backend.entity
+package cn.nagico.teamup.backend.entity.message
 
 import cn.nagico.teamup.backend.enums.StompContentType
 import cn.nagico.teamup.backend.enums.StompMessageType
@@ -15,7 +15,7 @@ data class StompMessage(
     val type: StompMessageType,
     val sender: Long,
     val receiver: Long,
-    val content: String?,
+    val content: StompMessageContent,
     val createTime: Long,
 ): Serializable {
     constructor(frame: StompFrame, sender: Long, receiver: Long) : this(
@@ -23,24 +23,24 @@ data class StompMessage(
         type = StompMessageType.of(frame.command()),
         sender = sender,
         receiver = receiver,
-        content = frame.content().toString(Charsets.UTF_8),
+        content = JSON.parseObject(frame.content().toString(Charsets.UTF_8), StompMessageContent::class.java),
         createTime = System.currentTimeMillis(),
     )
 
     fun toStompFrame(): StompFrame {
         return when (type) {
             StompMessageType.MESSAGE -> {
-                DefaultStompFrame(StompMessageType.MESSAGE.stompCommand, Unpooled.copiedBuffer(content, Charsets.UTF_8)).apply {
+                DefaultStompFrame(StompMessageType.MESSAGE.stompCommand, Unpooled.copiedBuffer(content.toString(), Charsets.UTF_8)).apply {
                     headers()
                         .set(StompHeaders.ID, id)
                         .set(StompHeaders.CONTENT_TYPE, StompContentType.JSON.contentType)
-                        .set(StompHeaders.CONTENT_LENGTH, (content?.length ?: 0).toString())
+                        .set(StompHeaders.CONTENT_LENGTH, (content.toString().length).toString())
                 }
             }
             StompMessageType.ACK -> {
                 DefaultStompFrame(StompMessageType.ACK.stompCommand).apply {
                     headers()
-                        .set(StompHeaders.ID, id)
+                        .set(StompHeaders.MESSAGE_ID, id)
                 }
             }
         }
@@ -49,4 +49,5 @@ data class StompMessage(
     fun toJson(): String {
         return JSON.toJSONString(this)
     }
+
 }

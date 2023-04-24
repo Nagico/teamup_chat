@@ -1,8 +1,5 @@
 package cn.nagico.teamup.backend.constant
 
-import cn.nagico.teamup.backend.entity.StompMessage
-import cn.nagico.teamup.backend.enums.StompMessageType
-
 
 object RedisKey {
     //region user

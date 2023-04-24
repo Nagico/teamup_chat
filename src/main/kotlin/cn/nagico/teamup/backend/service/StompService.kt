@@ -1,6 +1,6 @@
 package cn.nagico.teamup.backend.service
 
-import cn.nagico.teamup.backend.entity.StompMessage
+import cn.nagico.teamup.backend.entity.message.StompMessage
 import cn.nagico.teamup.backend.entity.StompSubscription
 import cn.nagico.teamup.backend.enums.StompVersion
 import cn.nagico.teamup.backend.exception.StompVersionError
