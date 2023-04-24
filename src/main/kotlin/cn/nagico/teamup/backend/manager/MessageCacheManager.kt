@@ -7,7 +7,6 @@ import cn.nagico.teamup.backend.enums.StompMessageType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Component
-import java.util.UUID
 
 
 @Component
@@ -15,26 +14,18 @@ class MessageCacheManager {
     @Autowired
     private lateinit var redisTemplate: RedisTemplate<String, Any>
 
-    fun getMessageCache(messageId: String, type: StompMessageType): StompMessage? {
-        return redisTemplate.opsForValue()[RedisKey.messageKey(messageId, type)] as? StompMessage
+    fun getMessageCache(messageId: String): StompMessage? {
+        return redisTemplate.opsForValue()[RedisKey.messageKey(messageId)] as? StompMessage
     }
 
-    fun getMessageCacheByKey(key: String): StompMessage? {
-        return redisTemplate.opsForValue()[key] as? StompMessage
-    }
-
-    fun setMessageCache(message: StompMessage) {
+    fun addMessageCache(message: StompMessage) {
         redisTemplate.opsForValue().set(
-            RedisKey.messageKey(message.id, message.type),
+            RedisKey.messageKey(message.id),
             message
         )
     }
 
-    fun deleteMessageCache(messageId: String, type: StompMessageType) {
-        redisTemplate.delete(RedisKey.messageKey(messageId, type))
-    }
-
-    fun deleteMessageCacheByKey(key: String) {
-        redisTemplate.delete(key)
+    fun deleteMessageCache(messageId: String) {
+        redisTemplate.delete(RedisKey.messageKey(messageId))
     }
 }

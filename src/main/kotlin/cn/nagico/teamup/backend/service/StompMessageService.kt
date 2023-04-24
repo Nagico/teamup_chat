@@ -37,8 +37,8 @@ class StompMessageService {
      * @param messageId 消息id
      * @return stomp消息
      */
-    fun getMessage(messageId: UUID, type: StompMessageType): StompMessage {
-        return getMessage(UUIDUtil.toHex(messageId), type)
+    fun getMessage(messageId: UUID): StompMessage {
+        return getMessage(UUIDUtil.toHex(messageId))
     }
 
     /**
@@ -47,30 +47,8 @@ class StompMessageService {
      * @param messageId 消息id (hex格式，无 dashes)
      * @return stomp消息
      */
-    fun getMessage(messageId: String, type: StompMessageType): StompMessage {
-        return messageCacheManager.getMessageCache(messageId, type) ?: StompMessage(messageMapper.selectById(messageId.replace("-", "")))
-    }
-
-    /**
-     * 添加消息
-     *
-     * @param message stomp消息
-     */
-    fun setMessage(message: StompMessage) {
-        messageCacheManager.setMessageCache(message)
-    }
-
-    /**
-     * 删除消息
-     *
-     * @param messageId 消息id
-     */
-    fun deleteMessage(messageId: String, type: StompMessageType) {
-        messageCacheManager.deleteMessageCache(messageId, type)
-    }
-
-    fun deleteMessage(message: StompMessage) {
-        messageCacheManager.deleteMessageCache(message.id, message.type)
+    fun getMessage(messageId: String): StompMessage {
+        return messageCacheManager.getMessageCache(messageId)!!
     }
 
     /**
@@ -79,45 +57,34 @@ class StompMessageService {
      * @param message stomp消息
      */
     fun deliverMessage(message: StompMessage) {
-        val target = userService.getUserServer(message.receiver) ?: let {
-            // 用户不在线
-            setMessage(message)
-            userCacheManager.addUserUnreadMessage(message)
-            messageQueueManager.saveStompMessage(message)
-            return
-        }
+        messageCacheManager.addMessageCache(message)
+        userCacheManager.addUserUnreceivedMessage(message)
+        messageQueueManager.saveStompMessage(message)
 
-        when (message.type) {
-            StompMessageType.MESSAGE -> {
-                setMessage(message)
-                messageQueueManager.deliverStompMessage(target, message)
-                messageQueueManager.saveStompMessage(message)
-            }
-            StompMessageType.ACK -> {
-                deleteMessage(message.id, StompMessageType.MESSAGE)
-                messageQueueManager.deliverStompMessage(target, message)
-                messageQueueManager.saveStompMessage(message)
-            }
-        }
+        val target = userService.getUserServer(message.receiver) ?: return
+        messageQueueManager.forwardStompMessage(target, message)  // 用户在线 转发消息
     }
 
     /**
-     * 获取用户未读消息
+     * 确认消息送达
+     *
+     * @param userId 用户id
+     * @param messageId 消息id
+     */
+    fun ackMessage(userId: Long, messageId: String) {
+        userCacheManager.deleteUserUnreceivedMessage(userId, messageId)
+        messageCacheManager.deleteMessageCache(messageId)
+    }
+
+    /**
+     * 获取用户未接收消息
      *
      * @param userId
      * @return
      */
-    fun fetchUnreadMessages(userId: Long): List<StompMessage> {
-        return userCacheManager.getUserUnreadMessages(userId).mapNotNull { key ->
-            messageCacheManager.getMessageCacheByKey(key).also {
-                if (it is StompMessage && it.type == StompMessageType.ACK)  // ACK消息无需确认，直接删除
-                {
-                    messageCacheManager.deleteMessageCache(it.id, StompMessageType.MESSAGE)
-                    messageCacheManager.deleteMessageCacheByKey(key)
-                }
-            }
-        }.also {
-            userCacheManager.clearUserUnreadMessages(userId)
+    fun fetchUnreceivedMessages(userId: Long): List<StompMessage> {
+        return userCacheManager.getUserUnreadMessages(userId).mapNotNull {
+            messageCacheManager.getMessageCache(it)
         }
     }
 
