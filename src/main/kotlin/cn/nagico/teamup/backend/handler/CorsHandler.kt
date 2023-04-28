@@ -21,7 +21,7 @@ class CorsHandler : SimpleChannelInboundHandler<HttpObject>() {
             response = processResponse(request, response)
             ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE)
         } else {
-            ctx.fireChannelRead(msg)
+            ctx.fireChannelRead(msg.retain())
         }
     }
 
