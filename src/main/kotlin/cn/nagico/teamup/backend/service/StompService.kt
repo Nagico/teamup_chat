@@ -124,6 +124,8 @@ class StompService {
         val stompMessage = StompMessage(inboundFrame, user, destination.toLong())
 
         stompMessageService.deliverMessage(stompMessage)
+
+        receiptIfNeed(ctx, inboundFrame)
     }
 
     /**
