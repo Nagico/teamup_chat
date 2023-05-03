@@ -1,9 +1,10 @@
 package cn.nagico.teamup.backend.manager
 
-import cn.nagico.teamup.backend.entity.message.StompMessage
-import cn.nagico.teamup.backend.entity.message.StompMessageContent
-import cn.nagico.teamup.backend.enums.StompMessageContentType
-import cn.nagico.teamup.backend.enums.StompMessageType
+import cn.nagico.teamup.backend.service.MessageQueueService
+import cn.nagico.teamup.backend.stomp.entity.message.StompMessage
+import cn.nagico.teamup.backend.stomp.entity.message.StompMessageContent
+import cn.nagico.teamup.backend.stomp.constant.StompMessageContentType
+import cn.nagico.teamup.backend.stomp.constant.StompMessageType
 import org.junit.jupiter.api.Test
 
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,7 +14,7 @@ import java.util.*
 @SpringBootTest
 class MessageQueueManagerTest {
     @Autowired
-    lateinit var messageQueueManager: MessageQueueManager
+    lateinit var messageQueueService: MessageQueueService
 
     @Test
     fun sendStompMessage() {
@@ -25,6 +26,6 @@ class MessageQueueManagerTest {
             receiver = 3,
             createTime = 4,
         )
-        messageQueueManager.saveStompMessage(newMessage)
+        messageQueueService.saveStompMessage(newMessage)
     }
 }

@@ -1,6 +1,6 @@
 package cn.nagico.teamup.backend.util.config
 
-import cn.nagico.teamup.backend.server.StompWebSocketChatServerInitializer
+import cn.nagico.teamup.backend.server.initializer.StompWebSocketChatServerInitializer
 import cn.nagico.teamup.backend.util.properties.NettyProperties
 import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.ChannelOption

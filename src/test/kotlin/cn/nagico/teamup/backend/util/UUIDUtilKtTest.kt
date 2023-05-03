@@ -1,6 +1,5 @@
 package cn.nagico.teamup.backend.util
 
-import cn.nagico.teamup.backend.util.uuid.UUIDUtil
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
