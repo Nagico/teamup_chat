@@ -125,6 +125,7 @@ class StompChatHandler : SimpleChannelInboundHandler<StompFrame>() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable) {
         when (cause) {
             is StompException -> stompService.sendErrorFrame(cause.type.content, cause.message, ctx)

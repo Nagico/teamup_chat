@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 @Service
 class UserServiceImpl: UserService {
     @Autowired
-    private lateinit var userCacheManager: cn.nagico.teamup.backend.cache.UserCacheManager
+    private lateinit var userCacheManager: UserCacheManager
 
     @Autowired
     private lateinit var serverUUID: String

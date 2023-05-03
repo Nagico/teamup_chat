@@ -8,8 +8,6 @@ import org.springframework.validation.annotation.Validated
 @Validated
 @ConfigurationProperties(prefix = "netty")
 class NettyProperties {
-    var host: String = "127.0.0.1"
-
     var port: Int = 8080
 
     var portSalve: Int = 18080

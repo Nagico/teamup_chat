@@ -16,16 +16,13 @@ class StompMessageServiceImpl: StompMessageService {
     private lateinit var userService: UserService
 
     @Autowired
-    private lateinit var messageCacheManager: cn.nagico.teamup.backend.cache.MessageCacheManager
+    private lateinit var messageCacheManager: MessageCacheManager
 
     @Autowired
     private lateinit var messageQueueService: MessageQueueService
 
     @Autowired
-    private lateinit var serverUUID: String
-
-    @Autowired
-    private lateinit var userCacheManager: cn.nagico.teamup.backend.cache.UserCacheManager
+    private lateinit var userCacheManager: UserCacheManager
 
     /**
      * 获取消息

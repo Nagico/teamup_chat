@@ -3,7 +3,6 @@ package cn.nagico.teamup.backend.service
 import cn.nagico.teamup.backend.stomp.entity.message.StompMessage
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.stomp.StompFrame
-import io.netty.util.AttributeKey
 
 interface StompService {
     /**

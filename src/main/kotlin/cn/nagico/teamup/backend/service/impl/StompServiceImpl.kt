@@ -20,7 +20,6 @@ import io.netty.util.AttributeKey
 import io.netty.util.CharsetUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.util.*
 import kotlin.collections.HashMap
 
 @Service
@@ -137,8 +136,7 @@ class StompServiceImpl: StompService {
     /**
      * 订阅
      *
-     * @param destination 订阅地址
-     * @param subscriptionId 订阅id
+     * @param user 用户ID
      * @param ctx Context
      */
     private fun subscribe(
