@@ -33,9 +33,9 @@ data class StompMessage(
                 DefaultStompFrame(StompMessageType.MESSAGE.stompCommand, Unpooled.copiedBuffer(content.toString(), Charsets.UTF_8)).apply {
                     headers()
                         .set(StompHeaders.ID, id)
-                        .set("sender", sender.toString())
-                        .set("create-time", createTime.toString())
+                        .set(StompHeaders.SUBSCRIPTION, sender.toString())
                         .set(StompHeaders.DESTINATION, receiver.toString())
+                        .set("create-time", createTime.toString())
                         .set(StompHeaders.CONTENT_TYPE, StompContentType.JSON.contentType)
                         .set(StompHeaders.CONTENT_LENGTH, (content.toString().length).toString())
                 }
