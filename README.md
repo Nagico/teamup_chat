@@ -301,7 +301,9 @@ NULL
 ```http request
 MESSAGE
 id:${message-id}
+sender:${sender}
 destination:${receiver}
+create-time:${create-time}
 content-type:application/json
 content-length: ${len(msg)}
 
@@ -309,7 +311,9 @@ ${msg}NULL
 ```
 
 - message-id: 消息 id
+- sender: 发送方用户 id
 - receiver: 接收方用户 id
+- create-time: 消息创建时间
 
 当客户端确认消息被正确接收后，需要向服务器返回 ACK 帧，否则该消息会被一直标记为未接收状态，并在用户下一次 CONNECT 后返回，直到被 ACK
 
