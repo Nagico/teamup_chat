@@ -46,6 +46,7 @@ _✨ Author: [Nagico](https://github.com/Nagico/) ✨_
 | v0.0.1 | 2023-5-10 | Nagico |                                                                                               初稿                                                                                                |
 | v0.0.2 | 2023-6-4  | Nagico |  增加DEBUG CONNECT，[More](https://github.com/Nagico/teamup_chat/commit/8f762d4ea9d79d92437b5fb769ecbd97c6034459#diff-b335630551682c19a781afebcf4d07bf978fb1f8ac04c6bf87428ed5106870f5R193-R226)   |
 | v0.1.0 | 2023-6-4  | Nagico | 支持SUBSCRIBE，取消自动订阅，[More](https://github.com/Nagico/teamup_chat/commit/098ed54a532d63f1ea5306a484f92346a343d4ef#diff-b335630551682c19a781afebcf4d07bf978fb1f8ac04c6bf87428ed5106870f5R213-R263) |
+| v0.1.1 | 2023-6-4  | Nagico |                                                                                     MESSAGE添加destination头部                                                                                      |
 
 ### 规定
 
@@ -300,6 +301,7 @@ NULL
 ```http request
 MESSAGE
 id:${message-id}
+destination:${receiver}
 content-type:application/json
 content-length: ${len(msg)}
 
@@ -307,6 +309,7 @@ ${msg}NULL
 ```
 
 - message-id: 消息 id
+- receiver: 接收方用户 id
 
 当客户端确认消息被正确接收后，需要向服务器返回 ACK 帧，否则该消息会被一直标记为未接收状态，并在用户下一次 CONNECT 后返回，直到被 ACK
 
