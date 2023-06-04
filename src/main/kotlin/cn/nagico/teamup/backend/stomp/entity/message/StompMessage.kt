@@ -34,8 +34,9 @@ data class StompMessage(
                     headers()
                         .set(StompHeaders.ID, id)
                         .set("sender", sender.toString())
-                        .set("create-time", createTime.toString())
+                        .set(StompHeaders.SUBSCRIPTION, receiver.toString())
                         .set(StompHeaders.DESTINATION, receiver.toString())
+                        .set("create-time", createTime.toString())
                         .set(StompHeaders.CONTENT_TYPE, StompContentType.JSON.contentType)
                         .set(StompHeaders.CONTENT_LENGTH, (content.toString().length).toString())
                 }
