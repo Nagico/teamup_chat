@@ -1,5 +1,6 @@
-package cn.nagico.teamup.backend.server
+package cn.nagico.teamup.backend.server.impl
 
+import cn.nagico.teamup.backend.server.NettyServer
 import cn.nagico.teamup.backend.util.annotation.Slf4j
 import cn.nagico.teamup.backend.util.annotation.Slf4j.Companion.logger
 import cn.nagico.teamup.backend.util.properties.NettyProperties
