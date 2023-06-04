@@ -6,5 +6,6 @@ enum class StompExceptionType(val content: String) {
     INVALID_VERSION("invalid_version"),
     UNSUPPORTED_COMMAND("unsupported_command"),
     AUTHENTICATION_ERROR("authentication_error"),
+    PERMISSION_ERROR("permission_error"),
     UNKNOWN_ERROR("unknown_error"),
 }

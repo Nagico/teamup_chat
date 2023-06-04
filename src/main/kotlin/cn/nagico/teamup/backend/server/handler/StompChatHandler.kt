@@ -119,6 +119,7 @@ class StompChatHandler : SimpleChannelInboundHandler<StompFrame>() {
         when (inboundFrame.command()) {  // 根据不同的命令进行处理
             StompCommand.STOMP, StompCommand.CONNECT -> stompService.onConnect(ctx, inboundFrame)  // 连接
             StompCommand.SEND -> stompService.onSend(ctx, inboundFrame)  // 发送
+            StompCommand.SUBSCRIBE -> stompService.onSubscribe(ctx, inboundFrame)  // 订阅
             StompCommand.DISCONNECT -> stompService.onDisconnect(ctx, inboundFrame)  // 断开连接
             StompCommand.ACK -> stompService.onAck(ctx, inboundFrame)  // 确认消息
             else -> throw StompCommandError("Received unsupported command ${inboundFrame.command()}")

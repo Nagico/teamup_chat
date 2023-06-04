@@ -9,6 +9,8 @@ import cn.nagico.teamup.backend.stomp.exception.frame.StompHeadMissing
 import cn.nagico.teamup.backend.service.StompMessageService
 import cn.nagico.teamup.backend.service.StompService
 import cn.nagico.teamup.backend.service.UserService
+import cn.nagico.teamup.backend.stomp.exception.StompException
+import cn.nagico.teamup.backend.stomp.exception.StompPermissionError
 import io.netty.channel.ChannelFutureListener
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.stomp.DefaultStompFrame
@@ -79,8 +81,6 @@ class StompServiceImpl: StompService {
 
 
         ctx.channel().attr(USER).set(user)
-        subscribe(user, ctx)
-
         // 发送连接成功帧
         val connectedFrame = DefaultStompFrame(StompCommand.CONNECTED)
         connectedFrame.headers()
@@ -90,6 +90,17 @@ class StompServiceImpl: StompService {
             .set(StompHeaders.HEART_BEAT, "0,0")
             .set("user", user.toString())
         ctx.writeAndFlush(connectedFrame)
+    }
+    override fun onSubscribe(ctx: ChannelHandlerContext, inboundFrame: StompFrame) {
+        val user = ctx.channel().attr(USER).get()!!
+
+        // 检查destination
+        val destination = getHeader(inboundFrame, StompHeaders.DESTINATION).toLong()
+        if (destination != user) {
+            throw StompPermissionError("user $user cannot subscribe to $destination")
+        }
+
+        subscribe(user, ctx)
 
         // 发送未读消息
         for (message in stompMessageService.fetchUnreceivedMessages(user)) {

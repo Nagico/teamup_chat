@@ -41,10 +41,11 @@ _✨ Author: [Nagico](https://github.com/Nagico/) ✨_
 
 ### 文档版本
 
-|   版本   |    日期     |   作者   |       备注        |
-|:------:|:---------:|:------:|:---------------:|
-| v0.0.1 | 2023-5-10 | Nagico |       初稿        |
-| v0.0.2 | 2023-6-4  | Nagico | 增加DEBUG CONNECT |
+|   版本   |    日期     |   作者   |         备注         |
+|:------:|:---------:|:------:|:------------------:|
+| v0.0.1 | 2023-5-10 | Nagico |         初稿         |
+| v0.0.2 | 2023-6-4  | Nagico |  增加DEBUG CONNECT   |
+| v0.1.0 | 2023-6-4  | Nagico | 支持SUBSCRIBE，取消自动订阅 |
 
 ### 规定
 
@@ -146,24 +147,9 @@ NULL
 - heat-beat: 协商后采用的心跳包模式 服务端强制禁用心跳包
 - user: 当前登录的用户 id
 
-此时服务器会自动订阅 `{user_id}` 的目的地址，用于用户接受私人消息
+~~此时服务器会自动订阅 `{user_id}` 的目的地址，用于用户接受私人消息~~
 
-若用户存在未 ACK 的消息，此时服务器根据时间顺序依次发送消息原文
-
-**接收若干 MESSAGE 帧**
-
-```http request
-MESSAGE
-id:344465d0-8914-41cf-bea5-449b6ced5184
-content-type:application/json
-content-length:27
-
-{"content":"1234","type":1}NULL
-```
-
-- id: message id
-
-注意，确认消息接收后需要对消息进行 ACK 返回
+v0.1.0 版本后，服务器不再自动订阅，而是在用户主动订阅后，根据时间顺序依次返回 `未 ACK` 的 MESSAGE 帧
 
 #### 失败
 
@@ -222,6 +208,57 @@ heart-beat:0,0
 user:2
 
 NULL
+```
+
+### 订阅地址
+
+v0.1.0版本后，用户需要手动${user_id}订阅地址，用于接收私人消息
+
+**发送SUBSCRIBE帧**
+    
+```http request
+SUBSCRIBE
+id:${id}
+destination:${user_id}
+ack:client-individual
+
+NULL
+```
+
+- id: 订阅id，~~用于取消订阅~~，暂无用处
+- user_id: 用户id，需与已登陆id一致
+- ack: 客户端确认模式，此处必须为 `client-individual`，即每个MESSAGE帧都需要独立的ACK
+
+#### 成功
+
+若用户存在未 ACK 的消息，此时服务器根据时间顺序依次发送消息原文
+
+**接收若干 MESSAGE 帧**
+
+```http request
+MESSAGE
+id:344465d0-8914-41cf-bea5-449b6ced5184
+content-type:application/json
+content-length:27
+
+{"content":"1234","type":1}NULL
+```
+
+- id: message id
+
+注意，确认消息接收后需要对消息进行 ACK 返回
+
+#### 失败
+
+- 订阅地址错误
+
+**接收 ERROR 帧**
+
+```http request
+ERROR
+message:permission_error
+
+user 1 cannot subscribe to 2NULL
 ```
 
 ### 发送消息

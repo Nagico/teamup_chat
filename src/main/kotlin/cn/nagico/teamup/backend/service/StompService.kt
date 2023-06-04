@@ -30,6 +30,14 @@ interface StompService {
     fun onSend(ctx: ChannelHandlerContext, inboundFrame: StompFrame)
 
     /**
+     * 处理SUBSCRIBE命令
+     *
+     * @param ctx Context
+     * @param inboundFrame 请求帧
+     */
+    fun onSubscribe(ctx: ChannelHandlerContext, inboundFrame: StompFrame)
+
+    /**
      * 传递消息 将消息发送给本服务端用户
      *
      *
