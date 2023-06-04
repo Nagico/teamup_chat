@@ -41,11 +41,11 @@ _✨ Author: [Nagico](https://github.com/Nagico/) ✨_
 
 ### 文档版本
 
-|   版本   |    日期     |   作者   |         备注         |
-|:------:|:---------:|:------:|:------------------:|
-| v0.0.1 | 2023-5-10 | Nagico |         初稿         |
-| v0.0.2 | 2023-6-4  | Nagico |  增加DEBUG CONNECT   |
-| v0.1.0 | 2023-6-4  | Nagico | 支持SUBSCRIBE，取消自动订阅 |
+|   版本   |    日期     |   作者   |                                                                                               备注                                                                                                |
+|:------:|:---------:|:------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| v0.0.1 | 2023-5-10 | Nagico |                                                                                               初稿                                                                                                |
+| v0.0.2 | 2023-6-4  | Nagico |  增加DEBUG CONNECT，[More](https://github.com/Nagico/teamup_chat/commit/8f762d4ea9d79d92437b5fb769ecbd97c6034459#diff-b335630551682c19a781afebcf4d07bf978fb1f8ac04c6bf87428ed5106870f5R193-R226)   |
+| v0.1.0 | 2023-6-4  | Nagico | 支持SUBSCRIBE，取消自动订阅，[More](https://github.com/Nagico/teamup_chat/commit/098ed54a532d63f1ea5306a484f92346a343d4ef#diff-b335630551682c19a781afebcf4d07bf978fb1f8ac04c6bf87428ed5106870f5R213-R263) |
 
 ### 规定
 
@@ -105,7 +105,7 @@ _✨ Author: [Nagico](https://github.com/Nagico/) ✨_
 由于本应用聊天功能只支持私聊功能，故对 STOMP 协议做出以下修改
 
 - 用户连接成功在 CONNECTED 帧后服务器会自动订阅 `destionation为user_id` 的地址，并且按照时间顺序依次返回 `未 ACK` 的 MESSAGE 帧
-- 不支持 `SUBSCRIBE`, `UNSUBSCRIBE`, `NACK`, `BEGIN`, `COMMIT`, `ABORT` 帧
+- 不支持 `UNSUBSCRIBE`, `NACK`, `BEGIN`, `COMMIT`, `ABORT` 帧
 
 ### 登入
 
