@@ -64,11 +64,16 @@ class StompServiceImpl: StompService {
                 throw StompVersionError(it.version)
         }
 
-        // 认证
-        val token = getHeader(inboundFrame, AUTH).split(" ")[1]
-        val payload = jwt.validateToken(token)
-        val user = payload.userId
-
+        // DEBUG user直接认证
+        val user = try {
+             getHeader(inboundFrame, DEBUG_USER).toLong()
+        }
+        catch (_:StompHeadMissing) {
+            // jwt 认证
+            val token = getHeader(inboundFrame, AUTH).split(" ")[1]
+            val payload = jwt.validateToken(token)
+            payload.userId
+        }
 
         userService.online(user)
 
@@ -212,5 +217,6 @@ class StompServiceImpl: StompService {
         private val USER = AttributeKey.valueOf<Long>("user")
 
         private const val AUTH = "Authentication"
+        private const val DEBUG_USER = "UserId"
     }
 }

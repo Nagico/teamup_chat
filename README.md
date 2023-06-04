@@ -39,6 +39,15 @@ _✨ Author: [Nagico](https://github.com/Nagico/) ✨_
 
 ## 使用说明
 
+### 文档版本
+
+|   版本   |    日期     |   作者   |       备注        |
+|:------:|:---------:|:------:|:---------------:|
+| v0.0.1 | 2023-5-10 | Nagico |       初稿        |
+| v0.0.2 | 2023-6-4  | Nagico | 增加DEBUG CONNECT |
+
+### 规定
+
 聊天模块使用Websocket作为通信协议，通信数据依据STOMP协议进行修改。消息采用JSON格式，须遵循以下格式
 
 ```json5
@@ -47,8 +56,6 @@ _✨ Author: [Nagico](https://github.com/Nagico/) ✨_
     "content": "hello world",  // 消息内容 str
 }
 ```
-
-### 规定
 
 详细内容请参考 [STOMP v1.2](https://stomp.github.io/stomp-specification-1.2.html)
 
@@ -181,6 +188,40 @@ ERROR
 message:unknown_error
 
 Invalid serialized unsecured/JWS/JWE object: Missing part delimitersNULL
+```
+
+### USERID登入 (DEBUG ONLY)
+
+用户连接上ws服务后，凭借 user_id 进行登录，用于调试
+
+**发送 CONNECT 帧**
+
+```http request
+CONNECT
+accept-version:1.2,1.1,1.0
+heart-beat:0,0
+UserId:${user_id}
+
+NULL
+```
+
+- accept-version: 客户端所支持的 stomp 协议版本
+- heart-beat: 客户端所期望的心跳包发送模式 此处为停用心跳包
+- user_id: 预期登录的用户ID，需存在
+
+#### 成功
+
+**接收 CONNECTED 帧**
+
+```http request
+CONNECTED
+version:1.2
+session:0242acfffe120006-00000001-0000004b-a99acb566ce1955b-055ec830
+server:Netty/4.1 (4e4194fa-16ea-490a-ad4c-940cff3b7a9d)
+heart-beat:0,0
+user:2
+
+NULL
 ```
 
 ### 发送消息
