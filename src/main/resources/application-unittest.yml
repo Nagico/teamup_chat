@@ -25,4 +25,4 @@ spring:
     virtual-host: /
 
 jwt:
-  secret: secret
+  secret: secretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecretsecret
