@@ -45,6 +45,8 @@ repositories {
 }
 
 dependencies {
+    testImplementation("org.mockito:mockito-core:5.3.1")
+
     // ws
     implementation("io.netty:netty-all:4.1.91.Final")
 
