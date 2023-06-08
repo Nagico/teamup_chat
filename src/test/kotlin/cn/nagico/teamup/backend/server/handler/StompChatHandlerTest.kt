@@ -152,9 +152,7 @@ class StompChatHandlerTest {
 
     @Test
     fun testExceptionCaught_StompException_CallsSendErrorFrame() {
-        val cause = Mockito.mock(StompException::class.java)
-        Mockito.`when`(cause.type).thenReturn(StompExceptionType.FRAME_ERROR)
-        Mockito.`when`(cause.message).thenReturn("Some error message")
+        val cause = StompException(StompExceptionType.FRAME_ERROR, "Some error message")
 
         stompChatHandler.exceptionCaught(ctx, cause)
 
