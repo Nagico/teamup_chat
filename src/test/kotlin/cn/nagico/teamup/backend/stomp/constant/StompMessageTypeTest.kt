@@ -14,7 +14,7 @@ class StompMessageTypeTest {
     @Test
     fun ofStompString() {
         assertEquals(StompMessageType.MESSAGE, StompMessageType.of("MESSAGE"))
-        assertEquals(StompMessageType.ACK, StompMessageType.of("RECEIPT"))
+        assertEquals(StompMessageType.ACK, StompMessageType.of("ACK"))
     }
 
     @Test

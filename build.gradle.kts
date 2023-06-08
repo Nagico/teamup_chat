@@ -104,6 +104,32 @@ tasks.test {
     finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
 }
 
+val excludePatterns = setOf(
+    "cn/nagico/teamup/backend/stomp/protocol/*",
+    "cn/nagico/teamup/backend/stomp/exception/**",
+    "cn/nagico/teamup/backend/Application.kt",
+)
+
+tasks.withType<JacocoCoverageVerification> {
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.map {
+            fileTree(it).apply {
+                exclude(excludePatterns)
+            }
+        }))
+    }
+}
+
+tasks.withType<JacocoReport> {
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.map {
+            fileTree(it).apply {
+                exclude(excludePatterns)
+            }
+        }))
+    }
+}
+
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
 
@@ -111,22 +137,6 @@ tasks.jacocoTestReport {
         xml.required.set(true)
         csv.required.set(false)
         html.outputLocation.set(layout.buildDirectory.dir("$buildDir/reports/html"))
-    }
-
-    val excludePatterns = setOf(
-        "cn/nagico/teamup/backend/stomp/protocol/*",
-        "cn/nagico/teamup/backend/stomp/exception/**",
-        "cn/nagico/teamup/backend/Application.kt",
-    )
-
-    afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.flatMap {
-            fileTree(it) {
-                exclude(
-                    excludePatterns
-                )
-            }.files
-        }))
     }
 }
 
