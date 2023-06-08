@@ -75,6 +75,8 @@ dependencies {
 
     // rabbitmq
     implementation("org.springframework.boot:spring-boot-starter-amqp")
+    testImplementation("org.springframework.amqp:spring-rabbit-test")
+    testImplementation("com.github.fridujo:rabbitmq-mock:1.2.0")
 
 }
 
