@@ -45,7 +45,14 @@ repositories {
 }
 
 dependencies {
-    testImplementation("org.mockito:mockito-core:5.3.1")
+    testImplementation("org.mockito:mockito-core:3.6.28")
+    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
+    testImplementation("org.powermock:powermock-core:2.0.9")
+    testImplementation("org.powermock:powermock-reflect:2.0.9")
+    testImplementation("org.powermock:powermock-api-mockito2:2.0.9") {
+        exclude(group = "org.objenesis", module = "objenesis")
+        exclude(group = "org.mockito", module = "mockito-core")
+    }
 
     // ws
     implementation("io.netty:netty-all:4.1.91.Final")
