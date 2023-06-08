@@ -112,6 +112,22 @@ tasks.jacocoTestReport {
         csv.required.set(false)
         html.outputLocation.set(layout.buildDirectory.dir("$buildDir/reports/html"))
     }
+
+    val excludePatterns = setOf(
+        "cn/nagico/teamup/backend/stomp/protocol/*",
+        "cn/nagico/teamup/backend/stomp/exception/**",
+        "cn/nagico/teamup/backend/Application.kt",
+    )
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.flatMap {
+            fileTree(it) {
+                exclude(
+                    excludePatterns
+                )
+            }.files
+        }))
+    }
 }
 
 jacoco {
